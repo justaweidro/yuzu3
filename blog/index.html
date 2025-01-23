@@ -25,35 +25,21 @@
             -webkit-user-select: none;
             color: var(--body-text-color);
             font: -apple-system-short-body;
-            height: 200vh; /* スクロール可能な高さ */
+            height: 100%;
             margin: 0;
             padding: 0;
-            position: relative;
-        }
-
-        body.watch {
-            align-items: center;
-            background: black;
-            color: white;
             display: flex;
-            font: -apple-system-body;
-            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         p {
             text-align: center;
             word-wrap: break-word;
-        }
-
-        body:not(.watch) p {
             padding: 0 50px;
             margin: 123px auto 0 auto;
             max-width: 832px;
-        }
-
-        body.watch p {
-            padding: 0;
-            max-width: 100vw;
         }
 
         a {
@@ -61,109 +47,106 @@
             color: inherit;
         }
 
-        #bottom-button, #top-button {
+        .hidden {
             display: none;
+        }
+
+        .button-container {
             position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background-color: #007aff;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .top-button {
+            top: 10px;
+        }
+
+        .bottom-button {
+            bottom: 10px;
+        }
+
+        button {
+            background-color: #007AFF;
             color: white;
             border: none;
+            padding: 10px 20px;
+            font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        #bottom-button {
-            bottom: 20px;
+        button:active {
+            background-color: #005BB5;
         }
 
-        #top-button {
-            top: 20px;
+        #password-container {
+            margin-top: 20px;
         }
 
-        #password-box {
-            display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        #password-box input {
-            margin-bottom: 10px;
-            padding: 5px;
-            width: calc(100% - 12px);
-        }
-
-        #error-message {
+        #password-message {
             color: red;
             margin-top: 10px;
-            display: none;
         }
     </style>
     <title>ページを開けません</title>
 </head>
-<body class="pad">
+<body>
     <p>iPadがインターネットに接続されていないため、“https://yuki-tangolevel.onrender.com/”のページをSafariで開くことができません。</p>
 
-    <!-- 上スクロールボタン -->
-    <button id="top-button" onclick="redirect()">サイトに飛ぶ</button>
-
-    <!-- 下スクロールボタン -->
-    <button id="bottom-button" onclick="showPasswordBox()">パスワード入力</button>
-
-    <!-- パスワード入力ボックス -->
-    <div id="password-box">
+    <!-- パスワード入力エリア -->
+    <div id="password-container" class="hidden">
         <input type="password" id="password-input" placeholder="パスワードを入力してください">
-        <button onclick="checkPassword()">送信</button>
-        <div id="error-message">パスワードが違います。</div>
+        <button id="password-button">送信</button>
+        <p id="password-message" class="hidden">パスワードが違います</p>
+    </div>
+
+    <!-- 上部ボタン -->
+    <div class="button-container top-button">
+        <button id="top-button">サイトに飛ぶ</button>
+    </div>
+
+    <!-- 下部ボタン -->
+    <div class="button-container bottom-button hidden">
+        <button id="bottom-button">パスワードを入力</button>
     </div>
 
     <script>
-        let scrollPosition = 0;
+        const passwordContainer = document.getElementById('password-container');
+        const passwordMessage = document.getElementById('password-message');
+        const bottomButton = document.getElementById('bottom-button');
+        const topButton = document.getElementById('top-button');
+        const passwordInput = document.getElementById('password-input');
 
-        // スクロールイベントを監視
-        document.addEventListener("scroll", () => {
-            const newScrollPosition = window.scrollY;
-
-            // 上スクロール時
-            if (newScrollPosition < scrollPosition && newScrollPosition === 0) {
-                document.getElementById("top-button").style.display = "block";
-            } else {
-                document.getElementById("top-button").style.display = "none";
+        // 下にスクロールして限界に達したら下部ボタンを表示
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                bottomButton.parentElement.classList.remove('hidden');
             }
-
-            // 下スクロール時
-            if (newScrollPosition > scrollPosition && newScrollPosition >= document.body.scrollHeight - window.innerHeight) {
-                document.getElementById("bottom-button").style.display = "block";
-            } else {
-                document.getElementById("bottom-button").style.display = "none";
-            }
-
-            scrollPosition = newScrollPosition;
         });
 
-        // パスワード入力ボックスを表示
-        function showPasswordBox() {
-            document.getElementById("password-box").style.display = "block";
-        }
+        // 上にスクロールして限界に達したら上部ボタンを表示
+        window.addEventListener('scroll', () => {
+            if (window.scrollY === 0) {
+                topButton.parentElement.classList.remove('hidden');
+            }
+        });
 
-        // パスワードをチェック
-        function checkPassword() {
-            const passwordInput = document.getElementById("password-input").value;
-            const errorMessage = document.getElementById("error-message");
-            errorMessage.style.display = "block";
-        }
+        // 下部ボタンを押したとき
+        bottomButton.addEventListener('click', () => {
+            passwordContainer.classList.remove('hidden');
+        });
 
-        // サイトにリダイレクト
-        function redirect() {
-            window.location.href = "https://yuki-tangolevel.onrender.com/";
-        }
+        // パスワード送信ボタンを押したとき
+        document.getElementById('password-button').addEventListener('click', () => {
+            passwordMessage.classList.remove('hidden');
+            passwordInput.value = ''; // 入力内容をリセット
+        });
+
+        // 上部ボタンを押したとき
+        topButton.addEventListener('click', () => {
+            window.location.href = 'https://yuki-tangolevel.onrender.com/';
+        });
     </script>
 </body>
 </html>
