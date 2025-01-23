@@ -4,7 +4,6 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="disabled-adaptations" content="watch">
     <style>
         :root {
             color-scheme: light dark;
@@ -26,16 +25,20 @@
             -webkit-user-select: none;
             color: var(--body-text-color);
             font: -apple-system-short-body;
-            height: 2000px; /* スクロール可能にする */
+            height: 100vh;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden; /* スクロールを無効化 */
         }
 
         p {
             text-align: center;
             word-wrap: break-word;
-            padding: 0 50px;
-            margin: 123px auto 0 auto;
+            padding: 20px;
+            margin: 0 auto;
             max-width: 832px;
         }
 
@@ -51,47 +54,90 @@
             border-radius: 5px;
         }
 
-        #scrollUpButton {
-            top: 20px;
+        #pullButton {
+            bottom: 20px;
         }
 
-        #goToSiteButton {
-            bottom: 20px;
+        #passwordContainer {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #scrollUpButton {
+            top: 20px;
         }
     </style>
     <title>ページを開けません</title>
 </head>
 <body>
     <p>iPadがインターネットに接続されていないため、“https://yuki-tangolevel.onrender.com/”のページをSafariで開くことができません。</p>
-    <button id="scrollUpButton">上にスクロール</button>
-    <button id="goToSiteButton">サイトを開く</button>
+
+    <!-- 下に引っ張ると表示されるボタン -->
+    <button id="pullButton">パスワードを入力</button>
+
+    <!-- パスワード入力フィールド -->
+    <div id="passwordContainer">
+        <input type="text" id="passwordInput" placeholder="パスワードを入力">
+        <button id="checkPasswordButton">確認</button>
+        <p id="errorMessage" style="color: red; display: none;">パスワードが違います</p>
+    </div>
+
+    <!-- 上に隠されているボタン -->
+    <button id="scrollUpButton">サイトを開く</button>
 
     <script>
+        const pullButton = document.getElementById("pullButton");
+        const passwordContainer = document.getElementById("passwordContainer");
+        const passwordInput = document.getElementById("passwordInput");
+        const checkPasswordButton = document.getElementById("checkPasswordButton");
+        const errorMessage = document.getElementById("errorMessage");
         const scrollUpButton = document.getElementById("scrollUpButton");
-        const goToSiteButton = document.getElementById("goToSiteButton");
 
-        let scrolledDown = false;
+        let pulledDown = false;
 
-        // スクロールイベントを監視
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 500 && !scrolledDown) {
-                scrolledDown = true;
-                goToSiteButton.style.display = "block"; // ボタンを表示
+        // 下に引っ張る検知 (touchイベントで実現)
+        let startY = 0;
+        let endY = 0;
+
+        window.addEventListener("touchstart", (e) => {
+            startY = e.touches[0].clientY;
+        });
+
+        window.addEventListener("touchmove", (e) => {
+            endY = e.touches[0].clientY;
+            if (startY - endY > 50 && !pulledDown) {
+                // 下に引っ張ったらボタンを表示
+                pulledDown = true;
+                pullButton.style.display = "block";
             }
         });
 
-        // 下のボタンを押したとき
-        goToSiteButton.addEventListener("click", () => {
-            goToSiteButton.style.display = "none"; // 下のボタンを隠す
-            scrollUpButton.style.display = "block"; // 上のボタンを表示
-            document.body.style.height = "3000px"; // ページをさらに長く
+        // 「パスワードを入力」ボタンを押したとき
+        pullButton.addEventListener("click", () => {
+            pullButton.style.display = "none";
+            passwordContainer.style.display = "flex";
         });
 
-        // 上のボタンを押したとき
+        // パスワード確認ボタンを押したとき
+        checkPasswordButton.addEventListener("click", () => {
+            errorMessage.style.display = "block";
+        });
+
+        // 上スクロールでボタンを表示 (touchイベントで実現)
+        let pulledUp = false;
+
+        window.addEventListener("touchmove", (e) => {
+            if (endY - startY > 50 && !pulledUp) {
+                pulledUp = true;
+                scrollUpButton.style.display = "block";
+            }
+        });
+
+        // 「サイトを開く」ボタンを押したとき
         scrollUpButton.addEventListener("click", () => {
-            window.scrollTo({ top: 0, behavior: "smooth" }); // 上にスクロール
-            scrollUpButton.style.display = "none"; // 上のボタンを隠す
-            window.location.href = "https://yuki-tangolevel.onrender.com"; // サイトを開く
+            window.location.href = "https://yuki-tangolevel.onrender.com";
         });
     </script>
 </body>
