@@ -86,6 +86,33 @@
         .scroll-button:hover {
             background-color: #0056b3;
         }
+
+        /* パスワード入力画面のスタイル */
+        .password-section {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .password-section input {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .password-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .password-section button:hover {
+            background-color: #218838;
+        }
     </style>
     <title>ページを開けません</title>
 </head>
@@ -96,6 +123,43 @@
     <div class="scrollable-content"></div>
 
     <!-- ボタンを追加 -->
-    <button class="scroll-button" onclick="alert('ボタンがクリックされました！')">ここをクリック</button>
+    <button class="scroll-button" onclick="handleButtonClick()">ここをクリック</button>
+
+    <!-- パスワード入力画面 -->
+    <div class="password-section" id="password-section">
+        <p>パスワードを入力してください:</p>
+        <input type="password" id="password-input" placeholder="パスワード">
+        <button onclick="checkPassword()">送信</button>
+    </div>
+
+    <script>
+        function handleButtonClick() {
+            // クッキーを設定
+            document.cookie = "approved=true; path=/";
+
+            // ページをスクロール
+            window.scrollTo({ top: 1000, behavior: 'smooth' });
+
+            // パスワード入力画面を表示
+            setTimeout(() => {
+                document.getElementById('password-section').style.display = 'block';
+            }, 1000);
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('password-input').value;
+            const responses = {
+                "1234": "パスワードが正しいです！",
+                "abcd": "別の正しいパスワードです！",
+                "5678": "もう一つの正しいパスワードです！"
+            };
+
+            if (responses[password]) {
+                alert(responses[password]);
+            } else {
+                alert("パスワードが間違っています。");
+            }
+        }
+    </script>
 </body>
 </html>
