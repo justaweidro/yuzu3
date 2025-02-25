@@ -1,10 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>QRコードを作成！</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>504 Gateway Timeout</title>
+    <link rel="icon" type="image/x-icon" href="https://s.yimg.jp/c/icon/s/bsc/2.0/favicon.ico">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            height: 200vh; /* スクロール可能にする */
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-family: "Arial Black", sans-serif;
+            color: #d9534f;
+            margin-top: 50px;
+            text-shadow: 2px 2px 8px rgba(217, 83, 79, 0.6);
+        }
+
+        h3 {
+            font-size: 1.8em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 24px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c9302c;
+        }
+
+        /* フェードインする要素 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* パスワード入力ボックス */
+        #passwordBox {
+            display: none;
+            margin: 30px auto;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid #d9534f;
+            background-color: #fff;
+            width: 300px;
+            box-shadow: 0 0 15px rgba(217, 83, 79, 0.5);
+        }
+
+        #passwordBox input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1.2em;
+        }
+
+        #passwordBox button {
+            margin-top: 10px;
+            background-color: #5cb85c;
+        }
+
+        #passwordBox button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
 </head>
 <body>
-    処理中です<br>ちょっと待ってね
-    <script>setTimeout(function(){location.reload();},1000);</script>
+    <h1>504 Gateway Timeout</h1>
+    <h3>Load Failed / Timeout</h3>
+    <p>読み込みに失敗しました。リロードをお試しください。</p>
+    <button onclick="location.reload()">Reload / リロード</button>
+
+    <!-- フェードインする要素 -->
+    <div class="fade-in" id="funFact">
+        えらー！
+    </div>
+
+    <!-- パスワード入力ボックス -->
+    <div id="passwordBox" class="fade-in">
+        <input type="password" id="passwordInput" placeholder="Enter Password" />
+        <button onclick="checkPassword()">確定</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const funFacts = [
+                "yahoo yukiのyahooの画面って思いっきり違法だからさ、うん",
+                "俺自体はあんまりプログラムできんのよね、これの元々のやつはニューインスタンス作ったるなのやつ、すごいよね",
+                "こういう小ネタって作者は作るの楽しいけど使う人見ないっていうね、自己満だよね",
+                "エラー画面でyuki作ったことあるわ、もう作るのめんどいけど",
+                "これ全部AIね、プログラム組んだの。"
+            ];
+
+            const funFactElement = document.getElementById("funFact");
+            const passwordBox = document.getElementById("passwordBox");
+
+            window.addEventListener("scroll", function () {
+                const screenHeight = window.innerHeight;
+
+                // Fun Fact のフェードイン
+                if (funFactElement.getBoundingClientRect().top < screenHeight) {
+                    funFactElement.classList.add("visible");
+                }
+
+                // パスワードボックスのフェードイン
+                if (window.scrollY + screenHeight >= document.body.offsetHeight - 100) {
+                    passwordBox.classList.add("visible");
+                    passwordBox.style.display = "block";
+                }
+            });
+
+            // クリックでランダムメッセージ
+            funFactElement.addEventListener("click", function () {
+                const randomIndex = Math.floor(Math.random() * funFacts.length);
+                funFactElement.textContent = funFacts[randomIndex];
+            });
+        });
+
+        function checkPassword() {
+            const password = document.getElementById("passwordInput").value;
+            if (password === "a_α") {
+                alert("yahoo yuki のリポジトリどぞ　https://github.com/justaweidro/Yahoo/");
+            } else {
+                alert("間違ったパスワードです。");
+            }
+        }
+    </script>
 </body>
 </html>
